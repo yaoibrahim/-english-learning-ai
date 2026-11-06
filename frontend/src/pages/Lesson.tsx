@@ -1,9 +1,60 @@
 
+import { useState } from 'react'
 import { lessons } from '../data/lessons'
+import { questions } from '../data/questions'
 import { completeLesson, useProgress } from '../hooks/useProgress'
+import LessonQuiz from '../components/quiz/LessonQuiz'
 
 export default function Lesson() {
   const { completedLessons } = useProgress()
+  const [activeLessonId, setActiveLessonId] = useState<number | null>(null)
+
+  const activeLesson = lessons.find(
+    lesson => lesson.id === activeLessonId
+  )
+
+  const lessonQuestions = questions.filter(
+    question => question.lessonId === activeLessonId
+  )
+
+  function handleSuccess() {
+    if (!activeLesson) return
+
+    completeLesson(activeLesson.id, activeLesson.xp)
+  }
+
+  if (activeLesson) {
+    return (
+      <section className="space-y-6">
+        <button
+          onClick={() => setActiveLessonId(null)}
+          className="rounded-lg bg-slate-200 px-4 py-2 text-slate-800 hover:bg-slate-300"
+        >
+          ← Retour aux leçons
+        </button>
+
+        <div>
+          <p className="font-semibold text-blue-600">
+            Niveau {activeLesson.level}
+          </p>
+
+          <h1 className="mt-2 text-3xl font-bold">
+            {activeLesson.title}
+          </h1>
+
+          <p className="mt-2 text-slate-600">
+            {activeLesson.description}
+          </p>
+        </div>
+
+        <LessonQuiz
+          key={activeLesson.id}
+          questions={lessonQuestions}
+          onSuccess={handleSuccess}
+        />
+      </section>
+    )
+  }
 
   return (
     <section className="space-y-6">
@@ -12,12 +63,16 @@ export default function Lesson() {
       </h1>
 
       <p className="text-slate-600">
-        Découvre les cours disponibles pour apprendre l'anglais.
+        Choisis une leçon pour commencer ton apprentissage.
       </p>
 
       <div className="grid gap-4 sm:grid-cols-2">
         {lessons.map(lesson => {
           const isCompleted = completedLessons.includes(lesson.id)
+
+          const hasQuestions = questions.some(
+            question => question.lessonId === lesson.id
+          )
 
           return (
             <article
@@ -40,27 +95,26 @@ export default function Lesson() {
                 ⭐ {lesson.xp} XP
               </p>
 
-              {/* Statut de la leçon */}
               {isCompleted && (
-                <p className="mt-3 font-medium text-green-600">
+                <p className="mt-3 font-semibold text-green-600">
                   ✓ Leçon terminée
                 </p>
               )}
 
-              {/* Bouton pour terminer la leçon */}
               <button
-                type="button"
-                onClick={() => completeLesson(lesson.id, lesson.xp)}
-                disabled={isCompleted}
-                className={`mt-4 rounded-lg px-4 py-2 font-medium text-white transition ${
-                  isCompleted
-                    ? 'cursor-not-allowed bg-green-600'
-                    : 'bg-blue-600 hover:bg-blue-700'
+                onClick={() => setActiveLessonId(lesson.id)}
+                disabled={!hasQuestions}
+                className={`mt-5 rounded-lg px-5 py-3 font-medium text-white transition ${
+                  hasQuestions
+                    ? 'bg-blue-600 hover:bg-blue-700'
+                    : 'cursor-not-allowed bg-slate-400'
                 }`}
               >
-                {isCompleted
-                  ? '✓ Terminée'
-                  : 'Terminer la leçon'}
+                {!hasQuestions
+                  ? 'Bientôt disponible'
+                  : isCompleted
+                    ? 'Rejouer la leçon'
+                    : 'Commencer la leçon'}
               </button>
             </article>
           )
