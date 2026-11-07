@@ -1,0 +1,19 @@
+TP 27.20 — TESTS / SÉCURITÉ / DÉPLOIEMENT
+
+[ ] npm ci
+[ ] npm run test
+[ ] npm run security:check
+[ ] npm run build
+[ ] npm run dev
+[ ] Tester sur téléphone (375 px) et ordinateur (1440 px)
+[ ] Tester /library /courses /reviews /backup
+[ ] Tester le jeu d'association sans cadenas
+[ ] Tester une réussite puis l'affichage XP/missions
+[ ] Exporter une sauvegarde JSON avant le déploiement
+[ ] npm audit (avec connexion Internet) et examiner les résultats
+[ ] Déposer uniquement frontend/dist sur Netlify
+[ ] Recharger /library/verbs sur l'URL Netlify
+[ ] Importer la progression JSON si besoin sur le nouveau domaine
+
+ATTENTION : application sans authentification, URL publique.
+Les données ne sont pas synchronisées automatiquement entre appareils.

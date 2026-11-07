@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "check": "npm run test && npm run security:check && npm run build",
+    "security:check": "node scripts/security-check.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.5",

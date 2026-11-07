@@ -1,0 +1,11 @@
+TP 27.19 — Checklist
+[ ] Export JSON TP 27.18 réalisé avant installation
+[ ] npm run build termine sans erreur
+[ ] Menu mobile à 320 px et 375 px
+[ ] Toutes les pages accessibles depuis Plus
+[ ] Saisie Writing et clic sur Vérifier fonctionnent
+[ ] Listening : lecture vocale
+[ ] Speaking : demande du microphone (sur localhost ou HTTPS)
+[ ] Navbar ordinateur conservée
+[ ] Backup JSON toujours fonctionnel
+[ ] Aucun compte utilisateur nécessaire

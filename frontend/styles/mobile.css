@@ -1,0 +1,38 @@
+/* TP 27.19 : styles additionnels. Ne remplace PAS src/index.css. */
+.tp27-shell { min-width: 0; }
+.tp27-content { min-width: 0; width: 100%; }
+.tp27-content :where(img, video, canvas) { max-width: 100%; height: auto; }
+.tp27-content :where(pre) { max-width: 100%; overflow-x: auto; }
+.tp27-content :where(h1, h2, h3, p, a, button, label) { overflow-wrap: break-word; }
+.tp27-content :where(.grid > *) { min-width: 0; }
+
+/* Garde le contenu visible au-dessus des boutons de navigation mobile. */
+.tp27-mobile-bottom {
+  padding-bottom: max(0.625rem, env(safe-area-inset-bottom));
+}
+.tp27-mobile-sheet {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+@media (max-width: 1023px) {
+  /* Ć‰vite le zoom automatique d'iOS lorsque l'utilisateur Ć©crit. */
+  .tp27-content :where(input, textarea, select) {
+    font-size: 16px;
+    max-width: 100%;
+  }
+  /* Cibles tactiles plus confortables, notamment pour les quiz. */
+  .tp27-content :where(button, a[class*="rounded"]) {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  .tp27-content :where(h1) { line-height: 1.15; }
+  .tp27-content :where(h2) { line-height: 1.25; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tp27-shell *, .tp27-shell *::before, .tp27-shell *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

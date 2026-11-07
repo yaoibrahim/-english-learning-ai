@@ -1,0 +1,11 @@
+# Dépendances et sorties de build
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+**/*.tsbuildinfo
+# Variables d'environnement, journaux et fichiers locaux
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store

@@ -1,0 +1,18 @@
+À AJOUTER dans frontend/src/data/activities.ts (conserver les constantes existantes) :
+
+export const REVIEW_ACTIVITY_ID = 1009
+export const REVIEW_ACTIVITY_XP = 15
+
+Dans le tableau extraActivities, ajouter AVANT le crochet ] final :
+
+{
+  id: REVIEW_ACTIVITY_ID,
+  title: 'Révisions intelligentes',
+  path: '/reviews',
+  level: 'A0',
+  xp: REVIEW_ACTIVITY_XP,
+  icon: '🧠',
+},
+
+Le module de révision est un outil transversal ; level:'A0' est utilisé
+pour rester compatible avec la structure ExtraActivity actuelle.

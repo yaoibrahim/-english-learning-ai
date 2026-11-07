@@ -1,0 +1,17 @@
+/* Tableau de bord — desktop, tablette et téléphone. */
+.home-dashboard { --home-border: #e7eaf2; }
+.home-panel { border: 1px solid var(--home-border); border-radius: .75rem; background: white; box-shadow: 0 1px 2px rgb(15 23 42 / 4%); }
+.home-activity { border-color: #e5e7eb; background: white; }
+.home-activity--indigo { background: #f6f7ff; border-color: #e6e8ff; }
+.home-activity--sky { background: #f0f7ff; border-color: #e3efff; }
+.home-activity--violet { background: #faf5ff; border-color: #f0e4ff; }
+.home-activity--cyan { background: #effcff; border-color: #dff6fb; }
+.home-activity--emerald { background: #f0fdf8; border-color: #d8f8ea; }
+.home-dashboard :where(a, button, select):focus-visible { outline: 3px solid #6366f1; outline-offset: 3px; }
+@media (max-width: 639px) {
+  .home-dashboard { font-size: 14px; }
+  .home-activity { padding: .8rem .85rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-dashboard * { transition: none !important; transform: none !important; }
+}
