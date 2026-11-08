@@ -1,4 +1,32 @@
-# English Learning AI — TP 27.20
+# English Learning AI
+
+## Structure : un seul parcours, A0 → C2
+
+L'accueil (`/`) affiche **le parcours principal** : 7 niveaux (A0 Premiers mots → C2 Maîtrise) de 5 unités chacun, soit 35 unités, tirées de `src/data/courses.ts`. Les anciens parcours (A0, A1–C2, leçons, niveaux, alphabet, nombres…) sont conservés dans « Autres modules », mais ne sont plus au premier plan.
+
+Chaque unité se déroule en trois temps (`src/pages/CourseUnit.tsx`) :
+
+1. **Leçon** : notions, vocabulaire, lecture.
+2. **Exercices** : entraînement sans note (`CourseQuiz`).
+3. **Test final** (`src/components/courses/UnitTests.tsx`), qui donne la note et débloque l'unité suivante à **80 %** :
+   - **QCM** : sens des mots, mots revus, une question de grammaire ;
+   - **Mettre les mots en place** : remettre une phrase dans l'ordre ;
+   - **Compréhension** : texte (avec lecture audio) + 3 questions.
+
+### Les mots reviennent d'une unité à l'autre
+
+`src/lib/unitTests.ts` applique une révision espacée : un mot introduit à l'unité J est revu aux unités J+1 à J+4 et J+6 (QCM), puis J+9, J+14 et J+20 (phrases à remettre en ordre). Chaque mot est donc revu au moins deux fois, et les mots du niveau A0 reviennent dans les niveaux suivants. Les phrases d'exemple réutilisent elles-mêmes des mots déjà vus.
+
+### Modifier le contenu
+
+- `src/data/courses.ts` : unités, vocabulaire, lecture, exercices d'entraînement.
+- `src/data/unitContent.ts` : **une phrase d'exemple par mot** (`wordExamples`) et **3 questions de compréhension par unité** (`unitComprehension`).
+- **Ajouter un mot** à une unité : l'ajouter à `vocabulary` dans `courses.ts` **et** ajouter sa phrase dans `wordExamples` (le mot doit figurer dans la phrase). `npm run test` signale tout oubli.
+- **Ajouter une unité** : l'ajouter à `courseUnits` et ses 3 questions dans `unitComprehension`.
+
+---
+
+# TP 27.20 (historique)
 
 Application personnelle **React + TypeScript + Vite**, sans compte utilisateur ni serveur d'application.
 
@@ -32,10 +60,10 @@ Ouvre **http://localhost:5173/**. Si tu souhaites tester le build final, lance `
 
 | Parcours | URL |
 |---|---|
-| Accueil | `/` |
-| Parcours A0 | `/path` |
-| Parcours A1–C2 | `/cefr` |
-| Cours mixtes A0–C2 | `/courses` |
+| Accueil = parcours principal A0 → C2 | `/` |
+| Ancien parcours A0 | `/path` |
+| Ancien parcours A1–C2 | `/cefr` |
+| Toutes les unités (filtres par thème) | `/courses` |
 | Fiches de cours | `/courses/references` |
 | Bibliothèque libre | `/library` |
 | Verbes et temps | `/library/verbs` |
@@ -52,7 +80,7 @@ Ouvre **http://localhost:5173/**. Si tu souhaites tester le build final, lance `
 
 ## TP 27.20 : tests et sécurité
 
-- `npm run test` : 11 tests unitaires / intégrité des données / configuration de routage et des sauvegardes.
+- `npm run test` : 17 tests (intégrité des données, tests de fin d'unité et révision des mots, routage, sauvegardes).
 - `npm run security:check` : recherche locale **ciblée** de clés privées, jetons évidents, HTML brut, fichiers de configuration manquants.
 - `npm run build` : vérification TypeScript + création de `dist/`.
 - `npm run lint` : analyse statique Oxlint existante (facultative si le projet comporte encore des avertissements antérieurs).

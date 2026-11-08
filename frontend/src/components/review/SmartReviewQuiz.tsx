@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 import { useRef, useState } from 'react'
 import {
   recordReviewAnswer,
@@ -41,6 +42,7 @@ export default function SmartReviewQuiz({ exercises, onSuccess, onClose }: Props
       : answer
     const candidates = [current.correctAnswer, ...(current.acceptedAnswers ?? [])]
     const correct = candidates.some(candidate => normalize(candidate) === normalize(actual))
+    playFeedback(correct ? 'correct' : 'incorrect')
     setIsCorrect(correct)
     setChecked(true)
     recordReviewAnswer(current.id, correct)

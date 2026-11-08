@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 
 import { useState } from 'react'
 import { englishNumbers } from '../../data/numbers'
@@ -76,6 +77,7 @@ export default function NumbersQuiz() {
   function selectAnswer(answer: string) {
     if (selectedAnswer !== null) return
 
+    playFeedback(answer === currentQuestion.answer ? 'correct' : 'incorrect')
     setSelectedAnswer(answer)
 
     if (answer === currentQuestion.answer) {

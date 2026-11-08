@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 
 import { useState } from 'react'
 import { englishColors } from '../../data/colors'
@@ -63,6 +64,7 @@ export default function ColorsQuiz() {
   function selectAnswer(answer: string) {
     if (selectedAnswer !== null) return
 
+    playFeedback(answer === currentQuestion.answer ? 'correct' : 'incorrect')
     setSelectedAnswer(answer)
 
     if (answer === currentQuestion.answer) {

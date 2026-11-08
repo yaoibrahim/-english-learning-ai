@@ -1,11 +1,11 @@
+import AudioSettingsButton from '../audio/AudioSettingsButton'
 import { Link, NavLink } from 'react-router-dom'
 
 const links = [
-  { path: '/', label: 'Accueil', icon: '🏠' },
-  { path: '/lessons', label: 'Leçons', icon: '📚' },
-  { path: '/levels', label: 'Niveaux', icon: '🌍' },
+  { path: '/', label: 'Parcours', icon: '🎓' },
+  { path: '/reviews', label: 'Révisions', icon: '🔁' },
+  { path: '/library', label: 'Bibliothèque', icon: '📚' },
   { path: '/progress', label: 'Progression', icon: '📊' },
-  { path: '/library', label: 'Bibliothèque', icon: '📖' },
 ]
 
 export default function Navbar() {
@@ -14,6 +14,7 @@ export default function Navbar() {
       <Link to="/" className="text-sm font-extrabold tracking-tight text-indigo-700">English Learning AI</Link>
       <div className="flex flex-wrap items-center gap-1">
         {links.map(link => <NavLink key={link.path} to={link.path} end={link.path === '/'} className={({ isActive }) => `rounded-lg px-3 py-2 text-xs font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${isActive ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100'}`}>{link.icon} {link.label}</NavLink>)}
+        <AudioSettingsButton />
         <Link to="/backup" aria-label="Sauvegarder ma progression" title="Sauvegarde" className="rounded-lg p-2 text-sm hover:bg-slate-100">💾</Link>
       </div>
     </div>

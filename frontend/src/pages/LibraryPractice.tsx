@@ -1,3 +1,4 @@
+import { playFeedback } from '../lib/audioFeedback'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { grammarTopics,phrasalVerbs,confusionGroups } from '../data/independentGrammar'
@@ -28,7 +29,7 @@ function TypedDrill({kind,level}:{kind:'fill'|'translate'|'order';level:string})
   const correct=[current.answer,...(current.variants??[])].some(s=>normalizeAnswer(s)===normalizeAnswer(assembled))
   function next(){
     const newScore=score+(correct?1:0);setScore(newScore)
-    if(index===items.length-1)setFinished(true)
+    if(index===items.length-1){setFinished(true);playFeedback('complete',{announce:true})}
     else{setIndex(v=>v+1);setTyped('');setUsed([]);setChecked(false)}
   }
   if(finished)return <section className="space-y-4 rounded-2xl border bg-white p-5"><h3 className="text-2xl font-bold">Résultat : {score}/{items.length}</h3><p>Tous les exercices peuvent être recommencés sans restriction.</p><button className="rounded-xl bg-indigo-700 px-5 py-3 font-bold text-white" onClick={reset}>Recommencer</button></section>
@@ -40,7 +41,7 @@ function TypedDrill({kind,level}:{kind:'fill'|'translate'|'order';level:string})
       <div className="flex flex-wrap gap-2">{scramble.filter(i=>!used.includes(i)).map(i=><button key={i} type="button" disabled={checked} onClick={()=>setUsed(old=>[...old,i])} className="rounded-xl border-2 border-indigo-200 bg-white px-4 py-3 font-semibold">{tokens[i]}</button>)}</div>
       {!checked&&<button type="button" onClick={()=>setUsed([])} className="rounded-lg px-3 py-2 text-sm text-slate-600 underline">Effacer la phrase</button>}
     </>:<textarea rows={2} className="min-h-24 w-full rounded-xl border-2 border-slate-200 p-3" placeholder={kind==='fill'?'Écris le mot manquant…':'Écris la traduction anglaise…'} value={typed} onChange={(e: {target:{value:string}})=>setTyped(e.target.value)} disabled={checked}/>}
-    {!checked?<div className="flex flex-wrap gap-3"><button type="button" disabled={!assembled.trim()} onClick={()=>setChecked(true)} className="rounded-xl bg-indigo-700 px-5 py-3 font-bold text-white disabled:opacity-50">Corriger</button><details className="self-center text-sm text-amber-800"><summary className="cursor-pointer font-semibold">💡 Indice</summary><p>{current.hint}</p></details></div>:<div className={`space-y-2 rounded-xl p-4 ${correct?'bg-emerald-50':'bg-amber-50'}`}>
+    {!checked?<div className="flex flex-wrap gap-3"><button type="button" disabled={!assembled.trim()} onClick={()=>{playFeedback(correct ? 'correct' : 'incorrect');setChecked(true)}} className="rounded-xl bg-indigo-700 px-5 py-3 font-bold text-white disabled:opacity-50">Corriger</button><details className="self-center text-sm text-amber-800"><summary className="cursor-pointer font-semibold">💡 Indice</summary><p>{current.hint}</p></details></div>:<div className={`space-y-2 rounded-xl p-4 ${correct?'bg-emerald-50':'bg-amber-50'}`}>
       <p className="font-bold">{correct?'✅ Bonne réponse !':'📘 Correction : '+current.answer}</p><p className="text-sm">{current.hint}</p>
       <button type="button" onClick={next} className="rounded-xl bg-indigo-700 px-5 py-3 font-bold text-white">{index===items.length-1?'Résultat':'Suivant →'}</button>
     </div>}

@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 
 import { useEffect, useRef, useState } from 'react'
 import {
@@ -172,8 +173,10 @@ export default function SpeakingQuiz({
 
     recognition.onresult = (event) => {
       const text = event.results[0]?.[0]?.transcript ?? ''
+      const match = calculateSimilarity(question.english, text)
       setTranscript(text)
-      setSimilarity(calculateSimilarity(question.english, text))
+      setSimilarity(match)
+      playFeedback(match >= 80 ? 'correct' : 'incorrect')
     }
 
     recognition.onerror = (event) => {

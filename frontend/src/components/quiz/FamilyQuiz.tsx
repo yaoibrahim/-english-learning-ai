@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 
 import { useState } from 'react'
 import { familyWords } from '../../data/family'
@@ -70,6 +71,7 @@ export default function FamilyQuiz() {
   function selectAnswer(answer: string) {
     if (selectedAnswer !== null) return
 
+    playFeedback(answer === currentQuestion.answer ? 'correct' : 'incorrect')
     setSelectedAnswer(answer)
 
     if (answer === currentQuestion.answer) {

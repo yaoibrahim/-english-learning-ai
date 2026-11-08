@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 import { useState } from 'react'
 import type { QuizQuestion } from '../../lib/independentLearning'
 
@@ -23,7 +24,7 @@ export default function MiniQuiz({title,questions,subtitle}:Props) {
     if(chosen===null)return
     const newScore=correct+(good?1:0)
     setCorrect(newScore)
-    if(index===questions.length-1)setDone(true)
+    if(index===questions.length-1){setDone(true);playFeedback('complete',{announce:true})}
     else{setIndex(index+1);setChosen(null)}
   }
   return <section className="space-y-4 rounded-2xl border border-indigo-200 bg-white p-4 shadow-sm sm:p-6" aria-label={title}>
@@ -35,7 +36,7 @@ export default function MiniQuiz({title,questions,subtitle}:Props) {
     <p className="text-base font-semibold sm:text-lg">{current.prompt}</p>
     <div className="grid gap-2 sm:grid-cols-2">
       {current.options.map(option=><button key={option} type="button" disabled={answered}
-        onClick={()=>setChosen(option)}
+        onClick={()=>{ setChosen(option); playFeedback(option === current.answer ? 'correct' : 'incorrect') }}
         className={`min-h-12 rounded-xl border-2 px-4 py-3 text-left text-sm font-medium transition sm:text-base ${answered&&option===current.answer?'border-emerald-500 bg-emerald-50 text-emerald-900':answered&&option===chosen?'border-rose-500 bg-rose-50 text-rose-900':'border-slate-200 bg-slate-50 hover:border-indigo-300'} disabled:cursor-default`}>
         {option}{answered&&option===current.answer?' ✓':''}
       </button>)}

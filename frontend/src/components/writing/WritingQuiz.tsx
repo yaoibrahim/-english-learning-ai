@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 import { useMemo, useRef, useState } from 'react'
 import { recordReviewMistake } from '../../hooks/useSmartReview'
 import {
@@ -83,6 +84,7 @@ export default function WritingQuiz({ difficulty, onSuccess }: Props) {
   function verify() {
     if (!question || !answer.trim() || correction) return
     const result = checkAnswer(question, answer)
+    playFeedback(result.accepted ? 'correct' : 'incorrect')
     if (!result.accepted) {
       recordReviewMistake({
         id: `writing:${question.id}`,

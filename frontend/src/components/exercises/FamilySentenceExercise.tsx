@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 
 import { useState } from 'react'
 import { familySentences } from '../../data/family'
@@ -56,6 +57,7 @@ export default function FamilySentenceExercise() {
   function verify() {
     if (selected.length !== tiles.length || checked) return
 
+    playFeedback(isCorrect ? 'correct' : 'incorrect')
     setChecked(true)
 
     if (isCorrect) {

@@ -1,3 +1,4 @@
+import { playFeedback } from '../lib/audioFeedback'
 
 import { useSyncExternalStore } from 'react'
 import { recordPractice } from './useStreak'
@@ -158,10 +159,14 @@ export function completeLesson(
   }
 
   if (changed) {
-    updateProgress({
+    const saved = updateProgress({
       completedLessons,
       totalXP,
     })
+    if (saved) playFeedback('reward', { announce: true })
+  } else {
+    // Refaire une leçon compte pour l'objectif du jour, même sans XP supplémentaire.
+    playFeedback('complete', { announce: true })
   }
 }
 

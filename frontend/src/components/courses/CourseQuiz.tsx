@@ -1,8 +1,7 @@
+import { playFeedback } from '../../lib/audioFeedback'
 import { useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { getCourseExercises, type CourseExercise, type CourseUnit } from '../../data/courses'
 import { recordReviewMistake, type ReviewSource } from '../../hooks/useSmartReview'
-import { recordCourseResult } from '../../hooks/useCourseProgress'
 
 function normalize(value: string) {
   const replacements: Record<string, string> = {
@@ -25,13 +24,14 @@ function play(text: string, slow: boolean) {
   return true
 }
 
-export default function CourseQuiz({ unit }: { unit: CourseUnit }) {
+/** Séance d'exercices de l'unité : de l'entraînement (sans note). Le résultat qui débloque la suite vient du test de fin d'unité. */
+export default function CourseQuiz({ unit, onFinish }: { unit: CourseUnit; onFinish: () => void }) {
   const questions = useMemo(() => getCourseExercises(unit.id), [unit.id])
   const [index, setIndex] = useState(0)
   const [answer, setAnswer] = useState('')
   const [checked, setChecked] = useState(false)
   const [correctCount, setCorrectCount] = useState(0)
-  const [result, setResult] = useState<ReturnType<typeof recordCourseResult> | null>(null)
+  const [finished, setFinished] = useState(false)
   const [transcript, setTranscript] = useState(false)
   const [noVoice, setNoVoice] = useState(false)
   const settledRef = useRef(false)
@@ -40,7 +40,9 @@ export default function CourseQuiz({ unit }: { unit: CourseUnit }) {
 
   function verify() {
     if (!question || checked || !answer.trim()) return
-    if (equal(question, answer)) setCorrectCount(n => n+1)
+    const valid = equal(question, answer)
+    playFeedback(valid ? 'correct' : 'incorrect')
+    if (valid) setCorrectCount(n => n+1)
     else {
       const source: ReviewSource = question.kind === 'listen' ? 'listening'
         : question.kind === 'reading' || question.kind === 'choice' ? 'reading' : 'writing'
@@ -61,24 +63,25 @@ export default function CourseQuiz({ unit }: { unit: CourseUnit }) {
       setIndex(n => n+1); setChecked(false); setAnswer(''); setTranscript(false); setNoVoice(false)
     } else {
       settledRef.current = true
-      setResult(recordCourseResult(unit.id, correctCount, questions.length))
+      setFinished(true)
+      playFeedback('complete', { announce: true })
     }
   }
   function restart() {
     if ('speechSynthesis' in window) window.speechSynthesis.cancel()
     settledRef.current = false
     setIndex(0); setChecked(false); setAnswer(''); setCorrectCount(0)
-    setResult(null); setTranscript(false); setNoVoice(false)
+    setFinished(false); setTranscript(false); setNoVoice(false)
   }
 
-  if (result) return <section className="space-y-4 rounded-2xl border bg-white p-6 text-center shadow-sm" aria-live="polite">
-    <div className="text-6xl">{result.passed ? '🏆' : '📚'}</div>
-    <h2 className="text-2xl font-bold">{result.passed ? 'Unité réussie !' : 'Encore un peu d’entraînement !'}</h2>
-    <p className="text-4xl font-extrabold text-indigo-700">{correctCount}/{questions.length} — {result.percentage} %</p>
-    <p>{result.passed ? result.firstTime ? `+${unit.xp} XP, prochaine unité débloquée !` : 'Unité révisée. XP de base déjà attribués.' : 'Il faut atteindre 80 % pour débloquer la suite.'}</p>
+  if (finished) return <section className="space-y-4 rounded-2xl border bg-white p-6 text-center shadow-sm" aria-live="polite">
+    <div className="text-6xl">{correctCount * 100 / questions.length >= 80 ? '🎉' : '💪'}</div>
+    <h2 className="text-2xl font-bold">Exercices terminés</h2>
+    <p className="text-4xl font-extrabold text-indigo-700">{correctCount}/{questions.length}</p>
+    <p>C’était de l’entraînement : ce score ne bloque rien. Passe maintenant au <strong>test de fin d’unité</strong> (QCM, mots en place, compréhension) pour débloquer l’unité suivante.</p>
     <div className="flex flex-wrap justify-center gap-3">
-      <button type="button" onClick={restart} className="min-h-12 rounded-xl bg-indigo-700 px-5 py-3 font-bold text-white">🔄 Recommencer</button>
-      <Link to="/courses" className="inline-flex min-h-12 items-center rounded-xl bg-slate-200 px-5 py-3 font-bold">Voir les unités →</Link>
+      <button type="button" onClick={onFinish} className="min-h-12 rounded-xl bg-green-600 px-5 py-3 font-bold text-white">✅ Passer au test de fin d’unité →</button>
+      <button type="button" onClick={restart} className="min-h-12 rounded-xl bg-indigo-700 px-5 py-3 font-bold text-white">🔄 Refaire les exercices</button>
     </div>
   </section>
   if (!question) return <p>Aucune question disponible.</p>
@@ -86,7 +89,7 @@ export default function CourseQuiz({ unit }: { unit: CourseUnit }) {
   const kindLabel = question.kind === 'listen' ? '🎧 Listening' : question.kind === 'reading' ? '📖 Reading'
     : question.kind === 'translate' ? '✍️ Writing' : question.kind === 'fill' ? '🔤 Orthographe' : '🧠 Grammaire'
   return <section className="space-y-5 rounded-2xl border bg-white p-4 shadow-sm sm:p-6">
-    <div className="flex items-center justify-between gap-2"><h2 className="text-xl font-bold">🎯 Exercice mixte</h2><span className="font-semibold text-indigo-700">{index+1}/{questions.length}</span></div>
+    <div className="flex items-center justify-between gap-2"><h2 className="text-xl font-bold">🎯 Exercices d’entraînement</h2><span className="font-semibold text-indigo-700">{index+1}/{questions.length}</span></div>
     <div className="h-3 overflow-hidden rounded-full bg-slate-200"><div className="h-full bg-indigo-600" style={{width:`${(index+1)*100/questions.length}%`}} /></div>
     <div className="flex flex-wrap gap-2 text-xs font-semibold">
       <span className="rounded-full bg-slate-100 px-3 py-1">{kindLabel}</span>
@@ -116,7 +119,7 @@ export default function CourseQuiz({ unit }: { unit: CourseUnit }) {
           <h4 className="font-bold">{correct?'✅ Bonne réponse !':'📚 Correction'}</h4>
           <p><strong>Réponse attendue :</strong> {question.answer}</p><p className="text-sm leading-6">{question.explanation}</p>
           {!correct && <p className="text-xs">Cette erreur rejoint aussi ton module « Révisions intelligentes ».</p>}
-          <button type="button" onClick={next} className="min-h-12 rounded-xl bg-indigo-700 px-5 py-3 font-semibold text-white">{index+1===questions.length?'Voir mon score →':'Question suivante →'}</button>
+          <button type="button" onClick={next} className="min-h-12 rounded-xl bg-indigo-700 px-5 py-3 font-semibold text-white">{index+1===questions.length?'Terminer les exercices →':'Question suivante →'}</button>
         </div>}
   </section>
 }

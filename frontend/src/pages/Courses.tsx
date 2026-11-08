@@ -19,7 +19,7 @@ export default function Courses() {
     <header className="rounded-3xl bg-gradient-to-r from-indigo-700 to-sky-700 p-6 text-white sm:p-8">
       <p className="font-bold text-indigo-100">📘 Cours complets d'anglais</p>
       <h1 className="mt-2 text-3xl font-extrabold sm:text-4xl">Parcours en spirale, de A0 à C2</h1>
-      <p className="mt-3 leading-7 text-indigo-50">35 unités : leçons en français, exemples en anglais, vocabulaire réutilisé, prononciation, écoute, lecture, écriture et révisions des anciennes unités.</p>
+      <p className="mt-3 leading-7 text-indigo-50">35 unités : chaque nouvelle phrase introduit un mot ou une règle, puis tu t’entraînes à reconnaître les termes et à reconstruire les phrases. Les mots précédents reviennent.</p>
       <p className="mt-4 font-semibold">{progress.completedCount}/{progress.totalCount} unités réussies · {progress.percentage} %</p>
       <div className="mt-2 h-3 overflow-hidden rounded-full bg-white/25"><div className="h-full bg-lime-300" style={{width:`${progress.percentage}%`}} /></div>
     </header>

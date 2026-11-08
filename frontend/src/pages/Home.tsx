@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLearningStats } from '../hooks/useLearningStats'
 import { useDailyGoal, setDailyGoal, type DailyGoalValue } from '../hooks/useDailyGoal'
@@ -9,32 +9,36 @@ import { useSmartReview } from '../hooks/useSmartReview'
 import SentenceBuilder from '../components/exercises/SentenceBuilder'
 import { readHomePathProgress, HOME_CEFR_TOTAL, HOME_COURSES_TOTAL } from '../lib/homeProgress'
 
-const featured = [
-  { to: '/path', icon: '🌱', title: 'Mon parcours A0', description: 'Premiers niveaux et exercices guidés', action: 'Continuer', tone: 'indigo' },
-  { to: '/alphabet', icon: '🔤', title: 'Alphabet anglais', description: '26 lettres et leur prononciation', action: 'Apprendre', tone: 'sky' },
-  { to: '/listening', icon: '🎧', title: 'Listening', description: 'Comprendre les phrases à l’oral', action: 'Écouter', tone: 'blue' },
-  { to: '/speaking', icon: '🎤', title: 'Speaking', description: 'Parler avec le microphone', action: 'Parler', tone: 'violet' },
-  { to: '/writing', icon: '✍️', title: 'Writing', description: 'Écrire et corriger les phrases', action: 'Écrire', tone: 'cyan' },
-  { to: '/reading', icon: '📖', title: 'Reading', description: 'Lire et répondre aux questions', action: 'Lire', tone: 'emerald' },
+const LevelPath = lazy(() => import('../components/courses/LevelPath'))
+
+const training = [
+  { to: '/reviews', icon: '🔁', title: 'Révisions', description: 'Retravailler mes erreurs' },
+  { to: '/listening', icon: '🎧', title: 'Listening', description: 'Comprendre à l’oral' },
+  { to: '/speaking', icon: '🎤', title: 'Speaking', description: 'Parler avec le micro' },
+  { to: '/writing', icon: '✍️', title: 'Writing', description: 'Écrire et corriger' },
+  { to: '/reading', icon: '📖', title: 'Reading', description: 'Lire et répondre' },
+  { to: '/library', icon: '📚', title: 'Bibliothèque libre', description: 'Verbes, grammaire, quiz' },
+  { to: '/courses/references', icon: '📑', title: 'Fiches de cours', description: 'Chercher une règle' },
+  { to: '/library/practice', icon: '🎯', title: 'Exercices libres', description: 'QCM, associations…' },
 ] as const
 
-const exploration = [
-  { to: '/library', icon: '📚', title: 'Bibliothèque libre', description: 'Verbes, temps, pronoms, grammaire, quiz — sans cadenas' },
-  { to: '/courses', icon: '🧠', title: '35 unités A0 à C2', description: 'Cours mixtes avec répétition des notions' },
-  { to: '/courses/references', icon: '📑', title: 'Fiches de référence', description: 'Chercher une règle ou un sujet' },
-  { to: '/cefr', icon: '🌍', title: 'Parcours A1–C2', description: '18 unités et progression par niveaux' },
-  { to: '/reviews', icon: '🔁', title: 'Révisions intelligentes', description: 'Retravailler les réponses incorrectes' },
-  { to: '/lessons', icon: '📘', title: 'Mes leçons', description: 'Vocabulaire, grammaire et conjugaison' },
-  { to: '/numbers', icon: '🔢', title: 'Nombres anglais', description: 'Compter et prononcer les nombres' },
-  { to: '/colors', icon: '🎨', title: 'Couleurs', description: 'Apprendre les couleurs en anglais' },
-  { to: '/calendar', icon: '📅', title: 'Jours et mois', description: 'Se repérer dans le calendrier' },
-  { to: '/family', icon: '👨‍👩‍👧‍👦', title: 'La famille', description: 'Décrire sa famille et ses proches' },
-  { to: '/achievements', icon: '🏆', title: 'Récompenses', description: 'Retrouver ses badges' },
-  { to: '/practice-history', icon: '🗓️', title: 'Historique', description: 'Voir les jours de pratique' },
-  { to: '/library/practice', icon: '🎯', title: 'Exercices libres', description: 'QCM, associations, traductions et plus' },
-  { to: '/library/verbs', icon: '⏱️', title: 'Verbes et temps', description: 'Conjugaisons et exercices libres' },
-  { to: '/progress', icon: '📊', title: 'Ma progression', description: 'Statistiques et scores' },
-  { to: '/backup', icon: '💾', title: 'Sauvegarde locale', description: 'Exporter et restaurer ses données' },
+/** Anciens parcours et thèmes : conservés, mais rangés à part du parcours principal. */
+const legacy = [
+  { to: '/courses', icon: '🗂️', title: 'Toutes les unités', description: 'Filtrer par thème ou mot-clé' },
+  { to: '/path', icon: '🌱', title: 'Ancien parcours A0', description: '20 niveaux guidés' },
+  { to: '/cefr', icon: '🌍', title: 'Ancien parcours A1–C2', description: '18 unités' },
+  { to: '/lessons', icon: '📘', title: 'Mes leçons', description: 'Vocabulaire et conjugaison' },
+  { to: '/levels', icon: '📊', title: 'Mes niveaux (anciens)', description: 'Progression par niveau' },
+  { to: '/alphabet', icon: '🔤', title: 'Alphabet', description: '26 lettres' },
+  { to: '/numbers', icon: '🔢', title: 'Nombres', description: 'Compter en anglais' },
+  { to: '/colors', icon: '🎨', title: 'Couleurs', description: 'Apprendre les couleurs' },
+  { to: '/calendar', icon: '📅', title: 'Jours et mois', description: 'Se repérer dans le temps' },
+  { to: '/family', icon: '👨‍👩‍👧‍👦', title: 'La famille', description: 'Décrire ses proches' },
+  { to: '/library/verbs', icon: '⏱️', title: 'Verbes et temps', description: 'Conjugaisons' },
+  { to: '/achievements', icon: '🏆', title: 'Récompenses', description: 'Mes badges' },
+  { to: '/practice-history', icon: '🗓️', title: 'Historique', description: 'Jours de pratique' },
+  { to: '/progress', icon: '📈', title: 'Ma progression', description: 'Statistiques et scores' },
+  { to: '/backup', icon: '💾', title: 'Sauvegarde locale', description: 'Exporter / restaurer' },
 ] as const
 
 function Meter({ value, label }: { value: number; label: string }) {
@@ -70,12 +74,16 @@ export default function Home() {
       <header className="mb-5 space-y-1 sm:mb-6">
         <p className="text-xs font-semibold tracking-wide text-indigo-600">English Learning AI</p>
         <h1 className="text-[1.55rem] font-extrabold leading-tight tracking-tight text-slate-950 sm:text-3xl">
-          Apprends l’anglais à ton rythme
+          Apprends l’anglais, du débutant à l’avancé
         </h1>
         <p className="text-xs leading-relaxed text-slate-600 sm:text-sm">
-          Mots, prononciation et phrases, à ton rythme et sans compte utilisateur.
+          35 unités de A0 à C2 : découvre des phrases, comprends les règles et construis tes propres phrases. Les mots reviennent régulièrement.
         </p>
       </header>
+
+      <Suspense fallback={<div role="status" className="home-panel p-4 text-sm text-slate-600">Chargement du parcours…</div>}>
+        <LevelPath />
+      </Suspense>
 
       <section aria-labelledby="home-stats-title" className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -95,19 +103,19 @@ export default function Home() {
         </div>
         <div className="home-panel space-y-2 px-3 py-3 sm:px-4">
           <div className="flex items-center justify-between gap-3 text-xs font-semibold">
-            <span>Progression des activités de base</span>
+            <span>Progression des leçons et activités</span>
             <span className="text-indigo-700">{stats.percentage} %</span>
           </div>
-          <Meter value={stats.percentage} label="Progression des activités de base" />
+          <Meter value={stats.percentage} label="Progression des leçons et activités" />
           <div className="flex flex-wrap gap-x-5 gap-y-1 text-[11px] text-slate-500">
-            <span>A0 : {a0.completedCount}/20</span>
-            <span>A1–C2 : {paths.cefrCount}/{HOME_CEFR_TOTAL}</span>
-            <span>Cours mixtes : {paths.coursesCount}/{HOME_COURSES_TOTAL}</span>
+            <span>Ancien A0 : {a0.completedCount}/20</span>
+            <span>Ancien A1–C2 : {paths.cefrCount}/{HOME_CEFR_TOTAL}</span>
+            <span>Parcours principal : {paths.coursesCount}/{HOME_COURSES_TOTAL} unités</span>
             {reviews.dueCount > 0 && <Link to="/reviews" className="font-semibold text-indigo-700">{reviews.dueCount} révision(s) à faire</Link>}
           </div>
         </div>
-        <Link to={stats.nextLesson ? '/lessons' : '/courses'} className="home-cta flex min-h-11 items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-center text-xs font-bold text-white transition hover:bg-indigo-700 sm:hidden">
-          {stats.nextLesson ? 'Continuer mes leçons →' : 'Découvrir les cours →'}
+        <Link to={stats.nextLesson ? '/lessons' : '/courses/references'} className="home-cta flex min-h-11 items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-center text-xs font-bold text-white transition hover:bg-indigo-700 sm:hidden">
+          {stats.nextLesson ? 'Continuer mes leçons →' : 'Voir les fiches de cours →'}
         </Link>
       </section>
 
@@ -154,26 +162,23 @@ export default function Home() {
         {missions.allCompleted && <p className="text-xs font-semibold text-emerald-700">Toutes les missions du jour sont terminées !</p>}
       </section>
 
-      <section className="space-y-3" aria-labelledby="home-activities-title">
-        <div className="flex items-center justify-between gap-3">
-          <h2 id="home-activities-title" className="text-base font-bold">📚 Mes activités</h2>
-          <button type="button" onClick={() => setShowExtras(!showExtras)} aria-expanded={showExtras} aria-controls="home-more-activities" className="text-xs font-semibold text-indigo-700 hover:underline">{showExtras ? 'Réduire ↑' : 'Tout explorer →'}</button>
-        </div>
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map(activity => <Link key={activity.to} to={activity.to} className={`home-activity home-activity--${activity.tone} group min-w-0 rounded-xl border p-3 transition hover:-translate-y-0.5 hover:shadow-md sm:p-4`}>
-            <div className="flex items-start gap-2 sm:block">
-              <span className="text-xl" aria-hidden="true">{activity.icon}</span>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-[13px] font-bold text-slate-950 sm:mt-2">{activity.title}</h3>
-                <p className="mt-1 text-xs leading-snug text-slate-600">{activity.description}</p>
-              </div>
-              <span aria-hidden="true" className="mt-1 text-indigo-500 sm:hidden">›</span>
-            </div>
-            <span className="mt-3 hidden min-h-9 items-center justify-center rounded-lg bg-indigo-600 px-3 text-xs font-bold text-white sm:flex">{activity.action}</span>
+      <section className="space-y-3" aria-labelledby="home-training-title">
+        <h2 id="home-training-title" className="text-base font-bold">🏋️ S’entraîner en plus</h2>
+        <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+          {training.map(item => <Link key={item.to} to={item.to} className="home-panel group flex min-w-0 items-center gap-3 p-3 transition hover:border-indigo-300 hover:bg-indigo-50">
+            <span aria-hidden="true" className="text-xl">{item.icon}</span>
+            <span className="min-w-0"><span className="block text-xs font-bold text-slate-900">{item.title}</span><span className="block text-[11px] leading-snug text-slate-500">{item.description}</span></span>
           </Link>)}
         </div>
-        {showExtras && <div id="home-more-activities" className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4" aria-label="Tous les autres modules">
-          {exploration.map(item => <Link key={item.to} to={item.to} className="home-panel group flex min-w-0 items-center gap-3 p-3 transition hover:border-indigo-300 hover:bg-indigo-50">
+      </section>
+
+      <section className="space-y-3" aria-labelledby="home-legacy-title">
+        <div className="flex items-center justify-between gap-3">
+          <h2 id="home-legacy-title" className="text-base font-bold">🗃️ Autres modules</h2>
+          <button type="button" onClick={() => setShowExtras(!showExtras)} aria-expanded={showExtras} aria-controls="home-more-activities" className="text-xs font-semibold text-indigo-700 hover:underline">{showExtras ? 'Réduire ↑' : 'Afficher →'}</button>
+        </div>
+        {showExtras && <div id="home-more-activities" className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4" aria-label="Anciens parcours et modules thématiques">
+          {legacy.map(item => <Link key={item.to} to={item.to} className="home-panel group flex min-w-0 items-center gap-3 p-3 transition hover:border-indigo-300 hover:bg-indigo-50">
             <span aria-hidden="true" className="text-lg">{item.icon}</span>
             <span className="min-w-0"><span className="block text-xs font-bold text-slate-900">{item.title}</span><span className="block text-[11px] leading-snug text-slate-500">{item.description}</span></span>
           </Link>)}

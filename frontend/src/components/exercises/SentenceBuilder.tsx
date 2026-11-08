@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 
 import { useState } from 'react'
 
@@ -147,7 +148,7 @@ export default function SentenceBuilder() {
       <div className="mt-6 flex gap-3">
         {!validated ? (
           <button
-            onClick={() => setValidated(true)}
+            onClick={() => { playFeedback(correct ? 'correct' : 'incorrect'); setValidated(true) }}
             disabled={selected.length === 0}
             className="rounded-lg bg-green-600 px-5 py-3 text-white disabled:opacity-50"
           >

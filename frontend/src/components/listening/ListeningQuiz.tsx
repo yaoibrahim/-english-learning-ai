@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -260,7 +261,7 @@ export default function ListeningQuiz({
               key={option}
               type="button"
               disabled={selected !== null}
-              onClick={() => setSelected(option)}
+              onClick={() => { setSelected(option); playFeedback(option === question.french ? 'correct' : 'incorrect') }}
               className={className}
             >
               {option}

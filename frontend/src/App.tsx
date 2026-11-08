@@ -1,3 +1,5 @@
+import FeedbackCelebration from './components/audio/FeedbackCelebration'
+import './styles/audio-feedback.css'
 import { lazy, Suspense } from 'react'
 import {
   BrowserRouter,
@@ -59,6 +61,7 @@ function App() {
         </div>
         <MobileNavigation />
         <ScrollToTop />
+        <FeedbackCelebration />
 
         <main
           id="main-content"

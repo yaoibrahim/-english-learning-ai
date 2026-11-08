@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { completeLesson } from './useProgress'
-import { courseUnits, getCourseExercises, type CourseLevel } from '../data/courses'
+import { courseUnits, type CourseLevel } from '../data/courses'
+import { getUnitTestTotal } from '../lib/unitTests'
 
 const KEY = 'english-learning-courses-v1'
 export type CourseProgress = { completedIds: string[]; attempts: Record<string, number>; bestScores: Record<string, number> }
@@ -39,7 +40,7 @@ export function canOpenCourse(id: string, completed = snapshot.completedIds) {
 }
 export function recordCourseResult(id: string, correct: number, total: number) {
   const unit = courseUnits.find(item => item.id === id)
-  if (!unit || total !== getCourseExercises(id).length || !Number.isInteger(correct) || correct < 0 || correct > total || !canOpenCourse(id)) {
+  if (!unit || total !== getUnitTestTotal(id) || !Number.isInteger(correct) || correct < 0 || correct > total || !canOpenCourse(id)) {
     return { passed: false, firstTime: false, percentage: 0 }
   }
   const percentage = Math.round(correct * 100 / total)

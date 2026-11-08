@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 
 import { useState } from 'react'
 import type { A0Question } from '../../data/a0Questions'
@@ -117,6 +118,7 @@ export default function MixedQuiz({
   function verify() {
     if (!canVerify || checked) return
 
+    playFeedback(correct ? 'correct' : 'incorrect')
     setChecked(true)
 
     if (correct) {

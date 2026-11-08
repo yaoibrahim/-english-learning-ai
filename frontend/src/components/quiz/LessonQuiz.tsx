@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 
 import { useState } from 'react'
 import type { Question } from '../../data/questions'
@@ -42,6 +43,7 @@ export default function LessonQuiz({
   function validateAnswer() {
     if (selectedAnswer === null || validated) return
 
+    playFeedback(isCorrect ? 'correct' : 'incorrect')
     setValidated(true)
 
     if (isCorrect) {

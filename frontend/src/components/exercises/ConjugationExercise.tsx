@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 
 import { useState } from 'react'
 import type { ConjugationQuestion } from '../../data/conjugation'
@@ -43,6 +44,7 @@ export default function ConjugationExercise({
 
     if (hasEmptyAnswer) return
 
+    playFeedback(score >= requiredScore ? 'complete' : 'incorrect', { announce: score >= requiredScore })
     setValidated(true)
 
     if (score >= requiredScore) {

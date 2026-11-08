@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { CEFRUnit } from '../../data/cefr'
@@ -20,6 +21,7 @@ export default function CEFRQuiz({ unit, onFinish }: Props) {
 
   function validate() {
     if (selected === null || checked || result) return
+    playFeedback(selected === question.correctIndex ? 'correct' : 'incorrect')
     setChecked(true)
     if (selected === question.correctIndex) setCorrectCount(count => count + 1)
   }

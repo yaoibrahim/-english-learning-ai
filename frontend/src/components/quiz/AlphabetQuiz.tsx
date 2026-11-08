@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 
 import { useState } from 'react'
 import { alphabet } from '../../data/alphabet'
@@ -79,6 +80,7 @@ export default function AlphabetQuiz() {
   function selectAnswer(answer: string) {
     if (selectedAnswer !== null) return
 
+    playFeedback(answer === currentQuestion.correctAnswer ? 'correct' : 'incorrect')
     setSelectedAnswer(answer)
 
     if (answer === currentQuestion.correctAnswer) {

@@ -1,3 +1,4 @@
+import AudioSettingsButton from '../audio/AudioSettingsButton'
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 
@@ -8,39 +9,40 @@ type NavigationItem = {
 }
 
 const bottomLinks: NavigationItem[] = [
-  { to: '/', icon: '🏠', label: 'Accueil' },
-  { to: '/lessons', icon: '📚', label: 'Leçons' },
-  { to: '/levels', icon: '🌍', label: 'Niveaux' },
+  { to: '/', icon: '🎓', label: 'Parcours' },
+  { to: '/reviews', icon: '🔁', label: 'Révisions' },
+  { to: '/library', icon: '📚', label: 'Biblio' },
   { to: '/progress', icon: '📊', label: 'Progrès' },
 ]
 
 const menuLinks: NavigationItem[] = [
-  { to: '/library', icon: '📚', label: 'Bibliothèque libre (sans cadenas)' },
-  { to: '/path', icon: '🌱', label: 'Parcours A0' },
-  { to: '/cefr', icon: '🌍', label: 'Parcours A1–C2' },
+  { to: '/', icon: '🎓', label: 'Mon parcours A0 → C2' },
   { to: '/reviews', icon: '🧠', label: 'Révisions intelligentes' },
+  { to: '/listening', icon: '🎧', label: 'Listening' },
+  { to: '/speaking', icon: '🎤', label: 'Speaking' },
+  { to: '/writing', icon: '✍️', label: 'Writing' },
+  { to: '/reading', icon: '📖', label: 'Reading' },
+  { to: '/library', icon: '📚', label: 'Bibliothèque libre (sans cadenas)' },
   { to: '/library/verbs', icon: '⏱️', label: 'Tous les verbes & temps' },
   { to: '/library/grammar', icon: '🧩', label: 'Grammaire & pronoms' },
   { to: '/library/confusions', icon: '🔠', label: 'Mots confondus' },
   { to: '/library/phrasal', icon: '🗣️', label: 'Phrasal verbs' },
   { to: '/library/practice', icon: '🎯', label: 'Exercices libres' },
-  { to: '/courses', icon: '📘', label: 'Cours A0–C2 complets' },
   { to: '/courses/references', icon: '📑', label: 'Fiches de cours' },
-  { to: '/lessons', icon: '📚', label: 'Mes leçons' },
-  { to: '/listening', icon: '🎧', label: 'Listening' },
-  { to: '/speaking', icon: '🎤', label: 'Speaking' },
-  { to: '/writing', icon: '✍️', label: 'Writing' },
-  { to: '/reading', icon: '📖', label: 'Reading' },
-  { to: '/levels', icon: '📊', label: 'Mes niveaux' },
+  { to: '/courses', icon: '🗂️', label: 'Toutes les unités (filtres)' },
   { to: '/progress', icon: '📈', label: 'Ma progression' },
+  { to: '/achievements', icon: '🏆', label: 'Récompenses' },
+  { to: '/practice-history', icon: '🗓️', label: 'Calendrier de pratique' },
+  { to: '/backup', icon: '💾', label: 'Sauvegarde locale' },
+  { to: '/path', icon: '🌱', label: 'Ancien parcours A0' },
+  { to: '/cefr', icon: '🌍', label: 'Ancien parcours A1–C2' },
+  { to: '/lessons', icon: '📚', label: 'Mes leçons (anciennes)' },
+  { to: '/levels', icon: '📊', label: 'Mes niveaux (anciens)' },
   { to: '/alphabet', icon: '🔤', label: 'Alphabet' },
   { to: '/numbers', icon: '🔢', label: 'Nombres' },
   { to: '/colors', icon: '🎨', label: 'Couleurs' },
   { to: '/calendar', icon: '📅', label: 'Jours et mois' },
   { to: '/family', icon: '👨‍👩‍👧‍👦', label: 'La famille' },
-  { to: '/achievements', icon: '🏆', label: 'Récompenses' },
-  { to: '/practice-history', icon: '🗓️', label: 'Calendrier de pratique' },
-  { to: '/backup', icon: '💾', label: 'Sauvegarde locale' },
 ]
 
 export default function MobileNavigation() {
@@ -102,14 +104,17 @@ export default function MobileNavigation() {
           <Link to="/" className="min-w-0 font-extrabold tracking-tight text-indigo-700">
             English Learning AI
           </Link>
-          <Link
-            to="/backup"
+          <div className="flex items-center gap-2">
+            <AudioSettingsButton />
+            <Link
+              to="/backup"
             aria-label="Sauvegarder ma progression"
             title="Sauvegarde"
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            💾
-          </Link>
+              💾
+            </Link>
+          </div>
         </div>
       </header>
 

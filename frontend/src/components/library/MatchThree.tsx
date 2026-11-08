@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 import { useMemo, useState } from 'react'
 import type { LibraryEntry } from '../../data/independentGrammar'
 
@@ -25,10 +26,11 @@ export default function MatchThree({pool,title='Associe les 3 paires'}:Props){
     if(!selected)return setMessage('Sélectionne d’abord un terme anglais à gauche.')
     const expected=items.find(x=>x.en===selected)
     if(expected?.fr===fr){
+      playFeedback(matched.length === 2 ? 'complete' : 'match', { announce: matched.length === 2 })
       setMatched(old=>[...old,selected])
       setSelected(null)
       setMessage('✅ Bonne association !')
-    }else{setSelected(null);setMessage('❌ Pas encore. Réessaie : aucune pénalité.')}
+    }else{playFeedback('incorrect');setSelected(null);setMessage('❌ Pas encore. Réessaie : aucune pénalité.')}
   }
   function restart(){setRound(x=>x+1);setSelected(null);setMatched([]);setMessage('')}
   if(items.length<3)return <p className="text-sm text-slate-500">Il faut au moins trois paires différentes pour cet exercice.</p>

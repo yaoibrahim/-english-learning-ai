@@ -1,3 +1,4 @@
+import { playFeedback } from '../../lib/audioFeedback'
 import { useMemo, useRef, useState } from 'react'
 import { recordReviewMistake } from '../../hooks/useSmartReview'
 import {
@@ -35,6 +36,7 @@ export default function ReadingQuiz({ difficulty, onSuccess }: Props) {
     const exercise = exercises[position]
     if (!exercise || selected === null || checked) return
 
+    playFeedback(selected === exercise.question.correctIndex ? 'correct' : 'incorrect')
     if (selected === exercise.question.correctIndex) {
       setCorrectCount(previous => previous + 1)
     } else {
