@@ -23,6 +23,8 @@ const menuLinks: NavigationItem[] = [
   { to: '/writing', icon: '✍️', label: 'Writing' },
   { to: '/reading', icon: '📖', label: 'Reading' },
   { to: '/library', icon: '📚', label: 'Bibliothèque libre (sans cadenas)' },
+  { to: '/library/word-game', icon: '🎲', label: 'Jeu de mots · 20 questions' },
+  { to: '/library/spelling-game', icon: '✍️', label: 'Écrire 20 mots · Jeu libre' },
   { to: '/library/verbs', icon: '⏱️', label: 'Tous les verbes & temps' },
   { to: '/library/grammar', icon: '🧩', label: 'Grammaire & pronoms' },
   { to: '/library/confusions', icon: '🔠', label: 'Mots confondus' },

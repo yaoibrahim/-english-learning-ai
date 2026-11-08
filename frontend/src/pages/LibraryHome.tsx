@@ -4,6 +4,8 @@ import { grammarTopics, confusionGroups, phrasalVerbs } from '../data/independen
 import { tenses } from '../lib/independentLearning'
 
 const categories=[
+  {path:'/library/spelling-game',icon:'✍️',title:'Écrire les mots — 20 défis',description:'Lis la traduction française et écris le mot anglais. Les erreurs reviennent jusqu’à ce que tu trouves la bonne orthographe.'},
+  {path:'/library/word-game',icon:'🎲',title:'Jeu de mots — 20 mots surprise',description:'20 définitions au hasard : verbes, grammaire, mots confondus et phrasal verbs. Les erreurs reviennent jusqu’à la bonne réponse !'},
   {path:'/library/verbs',icon:'⏱️',title:'Verbes & tous les temps',description:'Choisis un temps, puis n’importe quel verbe. Conjugaisons complètes, formes négatives, questions et quiz.'},
   {path:'/library/grammar',icon:'🧩',title:'Grammaire indépendante',description:'Pronoms, articles, noms, adjectifs, adverbes, prépositions, orthographe et bien plus.'},
   {path:'/library/confusions',icon:'🔠',title:'Mots faciles à confondre',description:'Their / there / they’re, your / you’re, then / than, etc.'},

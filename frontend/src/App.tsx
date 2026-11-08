@@ -44,6 +44,8 @@ const LibraryGrammar = lazy(() => import('./pages/LibraryGrammar'))
 const LibraryConfusions = lazy(() => import('./pages/LibraryConfusions'))
 const LibraryPhrasal = lazy(() => import('./pages/LibraryPhrasal'))
 const LibraryPractice = lazy(() => import('./pages/LibraryPractice'))
+const LibraryWordGame = lazy(() => import('./pages/LibraryWordGame'))
+const LibrarySpellingGame = lazy(() => import('./pages/LibrarySpellingGame'))
 
 
 function App() {
@@ -108,6 +110,8 @@ function App() {
             <Route path="/library/confusions" element={<LibraryConfusions />} />
             <Route path="/library/phrasal" element={<LibraryPhrasal />} />
             <Route path="/library/practice" element={<LibraryPractice />} />
+            <Route path="/library/word-game" element={<LibraryWordGame />} />
+            <Route path="/library/spelling-game" element={<LibrarySpellingGame />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/references" element={<CourseReferences />} />
             <Route path="/courses/:unitId" element={<CourseUnitPage />} />
